@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+from sys import exit
 from web.core import config
 
 from marrow.mailer import Mailer
@@ -23,17 +24,31 @@ class StartupMixIn(object):
         util.mail = Mailer(config, 'mail')
         util.mail.start()
         
+<<<<<<< HEAD
         try:
             config['api.identity']
             config['api.private'] = SigningKey.from_string(unhexlify(config['api.private']), curve=NIST256p, hashfunc=sha256)
             config['api.public'] = VerifyingKey.from_string(unhexlify(config['api.public']), curve=NIST256p, hashfunc=sha256)
         except:
             log.critical("Core Service API identity, public, or private key missing or invalid.")
+=======
+        # Load our keys into a usable form.
+        try:
+            config['api.private'] = SigningKey.from_string(unhexlify(config['api.private']), curve=NIST256p, hashfunc=sha256)
+            config['api.public'] = VerifyingKey.from_string(unhexlify(config['api.public']), curve=NIST256p, hashfunc=sha256)
+        except:
+            log.critical("Core Service API identity, public, or private key missing.")
+>>>>>>> FETCH_HEAD
             
             private = SigningKey.generate(NIST256p, hashfunc=sha256)
             
             log.critical("Here's a new private key; update the api.private setting to reflect this.\n%s", private.to_string().encode('hex'))
             log.critical("Here's that key's public key; this is what you register with Core.\n%s",  private.get_verifying_key().to_string().encode('hex'))
             log.critical("After registering, save the server's public key to api.public and your service's ID to api.identity.")
+<<<<<<< HEAD
+=======
+            
+            exit(-1)
+>>>>>>> FETCH_HEAD
         
         super(StartupMixIn, self).__init__()
